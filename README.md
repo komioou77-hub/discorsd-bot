@@ -1,3 +1,14 @@
-curl -H "Content-Type: application/json" -X POST \
-  -d '{"content":"💬 Hello from me!","username":"Enna Bot"}' \
-  https://discord.com/api/webhooks/ID/TOKEN
+on: push
+jobs:
+  build:
+    steps:
+      - run: npm test
+      - run: |
+          if [ $? -eq 0 ]; then
+            MSG="✅ Tests passed!"
+          else
+            MSG="❌ Tests failed!"
+          fi
+          curl -H "Content-Type: application/json" \
+               -d "{\"content\": \"$MSG\"}" \
+               ${{ secrets.DISCORD_WEBHOOK_URL }}
